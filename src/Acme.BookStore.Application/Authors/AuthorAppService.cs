@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Acme.BookStore.Permissions;
 using Microsoft.AspNetCore.Authorization;
 using Volo.Abp.Application.Dtos;
+using Volo.Abp.Domain.Entities.Caching;
 using Volo.Abp.Domain.Repositories;
 
 namespace Acme.BookStore.Authors;
@@ -14,18 +15,21 @@ public class AuthorAppService : BookStoreAppService, IAuthorAppService
 {
     private readonly IAuthorRepository _authorRepository;
     private readonly AuthorManager _authorManager;
-
+    private readonly IEntityCache<Author, Guid> _authorCache;
     public AuthorAppService(
         IAuthorRepository authorRepository,
-        AuthorManager authorManager)
+        AuthorManager authorManager,
+        IEntityCache<Author, Guid> authorCache)
     {
         _authorRepository = authorRepository;
         _authorManager = authorManager;
+        _authorCache = authorCache;
     }
 
     public async Task<AuthorDto> GetAsync(Guid id)
     {
-        var author = await _authorRepository.GetAsync(id);
+        var author = await _authorCache.GetAsync(id);
+        //var author = await _authorRepository.GetAsync(id);
         return ObjectMapper.Map<Author, AuthorDto>(author);
     }
 

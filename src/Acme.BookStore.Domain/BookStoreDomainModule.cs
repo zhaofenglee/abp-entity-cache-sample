@@ -1,5 +1,5 @@
 ﻿using System;
-using Acme.BookStore.Books;
+using Acme.BookStore.Authors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Acme.BookStore.MultiTenancy;
@@ -64,7 +64,8 @@ public class BookStoreDomainModule : AbpModule
             options.IsEnabled = MultiTenancyConsts.IsEnabled;
         });
         
-        
+        context.Services.AddEntityCache<Author, Guid>();
+
 
 #if DEBUG
         context.Services.Replace(ServiceDescriptor.Singleton<IEmailSender, NullEmailSender>());
